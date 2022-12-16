@@ -17,6 +17,8 @@
       <span>Cart ({{ totalQuantity }})</span>
     </div>
   </header>
+  <button @click="count++">Add 1</button>
+<p>Count is: {{ count }}</p>
   <router-view :inventory="inventory"/>
   <Sidebar
   v-if="showSidebar"
@@ -41,28 +43,24 @@ export default {
       totalQuantity: 0,
       showSidebar: false,
       inventory: undefined,
-      cart: {}
+      cart: {},
+      count: 0
     }
   },
-  // computed: {
-  //   totalQuantity () {
-  //     return Object.values(this.cart).reduce((acc, curr) => {
-  //       return acc + curr
-  //     })
-  //   }
-  // },
-  method: {
-    addToCart (name, index) {
-      if (this.cart[name]) this.cart.name = 0
-      this.cart[name] += this.inventory[index].quantity
-      this.inventory[index].quantity = 0
-    },
+  methods: {
+    // addToCart (name, index) {
+    //   if (this.cart[name]) this.cart.name = 0
+    //   this.cart[name] += this.inventory[index].quantity
+    //   this.inventory[index].quantity = 0
+    // },
     toggleSidebar () {
+      // this.count = 4
       this.showSidebar = !this.showSidebar
-    },
-    removeItem (name) {
-      delete this.cart[name]
+      // console.log(this.showSidebar)
     }
+    // removeItem (name) {
+    //   delete this.cart[name]
+    // }
   },
   mounted () {
     axios.get('https://server-test-backend.vercel.app/view')
