@@ -12,18 +12,64 @@
         <span>Past Orders</span>
       </router-link>
     </nav>
-    <!-- <div @click="toggleSidebar" class="top-bar-cart-link">
+    <div @click="toggleSidebar" class="top-bar-cart-link">
       <i class="icofont-cart-alt icofont-1x"></i>
       <span>Cart ({{ totalQuantity }})</span>
-    </div> -->
+    </div>
   </header>
-  <!-- <router-view :inventory="inventory"/>
+  <router-view :inventory="inventory"/>
   <Sidebar
   v-if="showSidebar"
   :toggle="toggleSidebar"
   :cart="cart"
   :inventory="inventory"
   :remove="removeItem"
-  /> -->
-  <router-view/>
+  />
+  <!-- <router-view/> -->
 </template>
+
+<script>
+import axios from 'axios'
+import Sidebar from './components/Sidebar.vue'
+
+export default {
+  components: {
+    Sidebar
+  },
+  data () {
+    return {
+      totalQuantity: 0,
+      showSidebar: false,
+      inventory: undefined,
+      cart: {}
+    }
+  },
+  // computed: {
+  //   totalQuantity () {
+  //     return Object.values(this.cart).reduce((acc, curr) => {
+  //       return acc + curr
+  //     })
+  //   }
+  // },
+  method: {
+    addToCart (name, index) {
+      if (this.cart[name]) this.cart.name = 0
+      this.cart[name] += this.inventory[index].quantity
+      this.inventory[index].quantity = 0
+    },
+    toggleSidebar () {
+      this.showSidebar = !this.showSidebar
+    },
+    removeItem (name) {
+      delete this.cart[name]
+    }
+  },
+  mounted () {
+    axios.get('https://server-test-backend.vercel.app/view')
+      .then((resp) => {
+        this.inventory = resp.data.data.products
+      })
+    // console.log('mounted')
+  }
+}
+</script>
