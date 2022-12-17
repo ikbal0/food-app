@@ -17,8 +17,6 @@
       <span>Cart ({{ totalQuantity }})</span>
     </div>
   </header>
-  <button @click="count++">Add 1</button>
-<p>Count is: {{ count }}</p>
   <router-view :inventory="inventory"/>
   <Sidebar
   v-if="showSidebar"

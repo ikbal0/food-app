@@ -22,12 +22,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><i class="icofont-carrot icofont-3x"></i></td>
-                    <td>Carrot</td>
-                    <td>$1.00</td>
-                    <td class="center">1</td>
-                    <td>$1.00</td>
+                <tr v-for="product in cart" v-bind:key="product.id">
+                    <td><i :class="'icofont-3x icofont-'+product.icon"></i></td>
+                    <td>{{product.product_name}}</td>
+                    <td>{{product.total.USD}}</td>
+                    <td class="center">{{product.qty}}</td>
+                    <td>{{product.total.USD}}</td>
                     <td class="center">
                     <button class="btn btn-light cart-remove">
                         &times;
@@ -37,9 +37,9 @@
                 </tbody>
             </table>
 
-            <p class="center"><em>No items in cart</em></p>
-            <div class="spread">
-                <span><strong>Total:</strong> $1.00</span>
+            <p v-if="cart == undefined" class="center"><em>No items in cart</em></p>
+            <div class="spread mt-2">
+                <span><strong>Total:</strong> ${{countTotal}}</span>
                 <button class="btn btn-light">Checkout</button>
             </div>
             </div>
@@ -47,9 +47,29 @@
     </aside>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   name: 'SideBar',
-  props: ['toggle', 'cart', 'inventory', 'remove'],
+  props: ['toggle', 'inventory', 'remove'],
+  data () {
+    return {
+      cart: undefined,
+      totalOnCart: 0
+    }
+  },
+  computed: {
+    countTotal () {
+      if (this.cart !== undefined) {
+        const sum = this.cart.reduce((accumulator, object) => {
+          return accumulator + object.total.USD
+        }, 0)
+        return sum
+      } else {
+        return 0
+      }
+    }
+  },
   methods: {
     getPrice (name) {
       const product = this.inventory.find((p) => {
@@ -63,6 +83,14 @@ export default {
       }, 0)
       return total.toFixed(2)
     }
+  },
+  mounted () {
+    axios.get('https://server-test-backend.vercel.app/view/cart')
+      .then((resp) => {
+        // console.log(resp.data.data.cart)
+        this.cart = resp.data.data.cart
+      })
+    // console.log('mounted')
   }
 }
 </script>

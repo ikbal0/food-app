@@ -31,13 +31,13 @@
                     <label>Quantity:</label>
                   </div>
                   <div class="cell">
-                    <input type="number" value="0">
+                    <input type="number" v-model="itemCount[product.id]">
                   </div>
                 </div>
               </form>
             </div>
             <div class="card-footer">
-              <button class="btn btn-light">Add to cart</button>
+              <button @click="addToChart(product.name, product.id)" class="btn btn-light">Add to cart</button>
             </div>
           </div>
         </div>
@@ -51,7 +51,8 @@ export default {
   data () {
     return {
       // inventory: undefined,
-      characters: ['mario', 'luigi', 'Yoshi', 'bowser']
+      characters: ['mario', 'luigi', 'Yoshi', 'bowser'],
+      itemCount: []
     }
   },
   // mounted () {
@@ -61,6 +62,11 @@ export default {
   //     })
   //   // console.log('mounted')
   // }
-  props: ['inventory']
+  props: ['inventory'],
+  methods: {
+    addToChart (name, index) {
+      alert('add to chart ' + name + ' ' + this.itemCount[index])
+    }
+  }
 }
 </script>
