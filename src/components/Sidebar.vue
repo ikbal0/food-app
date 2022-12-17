@@ -22,12 +22,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="product in cart" v-bind:key="product.id">
+                <tr v-for="product in cart" v-bind:key="product._id">
                     <td><i :class="'icofont-3x icofont-'+product.icon"></i></td>
                     <td>{{product.product_name}}</td>
-                    <td>{{product.total.USD}}</td>
+                    <td>{{product.price}}</td>
                     <td class="center">{{product.qty}}</td>
-                    <td>{{product.total.USD}}</td>
+                    <td>{{product.total}}</td>
                     <td class="center">
                     <button class="btn btn-light cart-remove">
                         &times;
@@ -36,11 +36,10 @@
                 </tr>
                 </tbody>
             </table>
-
             <p v-if="cart == undefined" class="center"><em>No items in cart</em></p>
             <div class="spread mt-2">
                 <span><strong>Total:</strong> ${{countTotal}}</span>
-                <button class="btn btn-light">Checkout</button>
+                <button @click="checkout" class="btn btn-light">Checkout</button>
             </div>
             </div>
         </div>
@@ -62,9 +61,9 @@ export default {
     countTotal () {
       if (this.cart !== undefined) {
         const sum = this.cart.reduce((accumulator, object) => {
-          return accumulator + object.total.USD
+          return accumulator + object.total
         }, 0)
-        return sum
+        return sum.toFixed(2)
       } else {
         return 0
       }
@@ -82,15 +81,26 @@ export default {
         return acc + (curr[1] * this.getPrice(curr[0]))
       }, 0)
       return total.toFixed(2)
+    },
+    checkout () {
+      const sum = this.cart.reduce((accumulator, object) => {
+        return accumulator + object.total
+      }, 0)
+      axios.post('https://server-test-backend.vercel.app/create/order', {
+        ItemData: this.cart,
+        total_order: sum.toFixed(2),
+        status: 'pending'
+      })
+        .then((resp) => {
+          console.log(resp)
+        })
     }
   },
   mounted () {
     axios.get('https://server-test-backend.vercel.app/view/cart')
       .then((resp) => {
-        // console.log(resp.data.data.cart)
-        this.cart = resp.data.data.cart
+        this.cart = resp.data.data.ViewCarts
       })
-    // console.log('mounted')
   }
 }
 </script>

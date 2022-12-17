@@ -11,6 +11,7 @@
               <td>Quantity</td>
               <td>Total</td>
               <td>Status</td>
+              <td class="sr-only">Action</td>
             </tr>
           </thead>
           <tbody>
@@ -37,6 +38,9 @@
               </td>
               <td>${{item.total_order}}</td>
               <td>{{item.status}}</td>
+                <td>
+                    <button @click="updateStatus(item._id)" class="btn btn-dark">Send Item</button>
+                </td>
             </tr>
           </tbody>
         </table>
@@ -50,6 +54,14 @@ export default {
   data () {
     return {
       order: undefined
+    }
+  },
+  methods: {
+    updateStatus (id) {
+      axios.patch(`https://server-test-backend.vercel.app/edit/order/${id}`)
+        .then((resp) => {
+          console.log(resp)
+        })
     }
   },
   mounted () {

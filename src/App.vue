@@ -5,11 +5,14 @@
         <i class="icofont-spoon-and-fork"></i>
         <span>Home</span>
       </router-link>
-      <router-link to="/products" class="top-bar-link">
+      <!-- <router-link to="/products" class="top-bar-link">
         <span>Products</span>
-      </router-link>
+      </router-link> -->
       <router-link to="/past-orders" class="top-bar-link">
-        <span>Past Orders</span>
+        <span>Orders</span>
+      </router-link>
+      <router-link to="/update-order-status" class="top-bar-link">
+        <span>(On Admin) Update Status Order</span>
       </router-link>
     </nav>
     <div @click="toggleSidebar" class="top-bar-cart-link">
@@ -17,7 +20,11 @@
       <span>Cart ({{ totalQuantity }})</span>
     </div>
   </header>
-  <router-view :inventory="inventory"/>
+  <router-view
+  :inventory="inventory"
+  :addToChart="addToChart"
+  :itemCount="itemCount"
+  />
   <Sidebar
   v-if="showSidebar"
   :toggle="toggleSidebar"
@@ -41,20 +48,16 @@ export default {
       totalQuantity: 0,
       showSidebar: false,
       inventory: undefined,
-      cart: {},
-      count: 0
+      itemCount: []
     }
   },
   methods: {
-    // addToCart (name, index) {
-    //   if (this.cart[name]) this.cart.name = 0
-    //   this.cart[name] += this.inventory[index].quantity
-    //   this.inventory[index].quantity = 0
-    // },
+    addToChart (name, index) {
+      alert('add to chart ' + name + ' ' + this.itemCount[index])
+    },
     toggleSidebar () {
       // this.count = 4
       this.showSidebar = !this.showSidebar
-      // console.log(this.showSidebar)
     }
     // removeItem (name) {
     //   delete this.cart[name]
@@ -65,7 +68,6 @@ export default {
       .then((resp) => {
         this.inventory = resp.data.data.products
       })
-    // console.log('mounted')
   }
 }
 </script>
